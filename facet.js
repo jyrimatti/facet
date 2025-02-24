@@ -92,6 +92,34 @@ const facet = new function() {
           el.removeAttribute('inherit')
         }
 
+        // Implement slotting manually when no shadow DOM in use
+        if (shadowMode === 'none') {
+          const root = this.#root
+          // named slots
+          content.querySelectorAll('slot[name]').forEach(slot => {
+              const slotName = slot.getAttribute('name')
+              var defaultOverwritten = false
+              root.querySelectorAll(`[slot="${slotName}"]`).forEach(slotContent => {
+                if (!defaultOverwritten) {
+                  defaultOverwritten = true
+                  slot.innerHTML = ''
+                }
+                slot.appendChild(slotContent)
+              })
+          })
+          // unnamed slots
+          content.querySelectorAll('slot:not([name])').forEach(slot => {
+            var defaultOverwritten = false
+            root.querySelectorAll(':scope > *:not([slot])').forEach(slotContent => {
+              if (!defaultOverwritten) {
+                defaultOverwritten = true
+                slot.innerHTML = ''
+              }
+              slot.appendChild(slotContent)
+            })
+          })
+        }
+
         if(formAssoc) this.value = this.getAttribute('value')
         this.#root.append(content)
         this.#event('connect')
