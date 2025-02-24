@@ -127,6 +127,7 @@ const facet = new function() {
    * @param {ParentNode} root The parent element to discover inside.
    */
   this.discoverDeclarativeComponents = function discoverDeclarativeComponents(root) {
+    let facet = this;
     let mixinSelector = `template[${facet.config.namespace}mixin]:not([defined])`
     let cmpntSelector = `template[${facet.config.namespace}component]:not([defined])`
 
